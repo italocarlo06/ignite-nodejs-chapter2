@@ -1,13 +1,18 @@
+import { inject, injectable } from "tsyringe";
+
 import { CreateCategoryDTO } from "../../dtos/CreateCategoryDTO";
 import { ICategoriesRepository } from "../../repositories/ICategoriesRepository";
 
-
+@injectable()
 class CreateCategoryUseCase {
-  constructor ( private categoriesRepository: ICategoriesRepository){
+  constructor ( 
+    @inject("CategoriesRepository")
+    private categoriesRepository: ICategoriesRepository
+  ){
 
   }
-  execute({ name, description }: CreateCategoryDTO):void {
-    const categoryAlreadExists = this.categoriesRepository.findByName(name);
+  async execute({ name, description }: CreateCategoryDTO):Promise<void> {
+    const categoryAlreadExists = await this.categoriesRepository.findByName(name);
     if (!categoryAlreadExists){
       this.categoriesRepository.create({ name, description });      
     }
