@@ -2,6 +2,7 @@ import { inject, injectable } from "tsyringe";
 
 import { CreateCategoryDTO } from "../../dtos/CreateCategoryDTO";
 import { ICategoriesRepository } from "../../repositories/ICategoriesRepository";
+import { AppError } from "../../../../errors/AppError";
 
 @injectable()
 class CreateCategoryUseCase {
@@ -17,7 +18,7 @@ class CreateCategoryUseCase {
       this.categoriesRepository.create({ name, description });      
     }
     else 
-      throw new Error("Category already exists");
+      throw new AppError("Category already exists");
   }
 }
 
