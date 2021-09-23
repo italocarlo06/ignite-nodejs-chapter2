@@ -1,0 +1,39 @@
+
+import { Specification } from "@modules/cars/infra/typeorm/entities/Specification";
+import { CreateSpecificationDTO } from "@modules/cars/dtos/CreateSpecificationDTO";
+import { ISpecificationsRepository } from "../ISpecificationsRepository";
+
+class SpecificationsInMemoryRepository implements ISpecificationsRepository {
+
+  private specifications: Specification[] = [];
+
+  async create({ name, description }: CreateSpecificationDTO): Promise<Specification> {    
+
+    const specification = new Specification();
+    Object.assign(specification, {
+      name,
+      description
+    });    
+    this.specifications.push(specification);    
+
+    return specification;
+  }
+  async findByName(name: string): Promise<Specification> {
+    const specification = this.specifications.find( specification => specification.name === name);
+    return specification;
+  }
+
+  async findByIds(ids: string[]): Promise<Specification[]> {
+    const allSpecifications = this.specifications.filter( (specification) => ids.includes(specification.id));
+    return allSpecifications;
+  }
+
+  async list(): Promise<Specification[]> {
+    const specifications = this.specifications;
+
+    return specifications;
+  }
+
+}
+
+export { SpecificationsInMemoryRepository };

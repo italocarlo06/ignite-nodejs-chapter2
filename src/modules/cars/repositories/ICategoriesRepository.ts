@@ -1,5 +1,5 @@
-import { CreateCategoryDTO } from "../dtos/CreateCategoryDTO";
-import { Category } from "../entities/Category";
+import { CreateCategoryDTO } from "@modules/cars/dtos/CreateCategoryDTO";
+import { Category } from "@modules/cars/infra/typeorm/entities/Category";
 
 interface ICategoriesRepository {
     create({ name, description }: CreateCategoryDTO):Promise<void>;

@@ -1,9 +1,9 @@
 import { inject, injectable } from "tsyringe";
 import { hash } from "bcryptjs";
 
-import { CreateUserDTO } from "../../dtos/CreateUserDTO";
-import { IUsersRepository } from "../../repositories/IUsersRepository";
-import { AppError } from "../../../../errors/AppError";
+import { CreateUserDTO } from "@modules/accounts/dtos/CreateUserDTO";
+import { IUsersRepository } from "@modules/accounts/repositories/IUsersRepository";
+import { AppError } from "@errors/AppError";
 
 @injectable()
 class CreateUserUseCase {
@@ -17,7 +17,7 @@ class CreateUserUseCase {
     const hashedPassword = await hash(password, 8);
     const userAlreadExists = await this.usersRepository.findByEmail(email);
     if (!userAlreadExists){
-      this.usersRepository.create({ 
+      await this.usersRepository.create({ 
         name, 
         email, 
         password: hashedPassword, 
