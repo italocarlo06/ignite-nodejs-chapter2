@@ -105,6 +105,14 @@ class CarsRepository implements ICarsRepository {
     return cars;
   }
 
+  async updateCarAvailable({ car_id, available }: UpdateCarAvaiableDTO): Promise<void> {
+    await this.repository.createQueryBuilder()
+      .update()
+      .set({ available})
+      .where("id = :car_id",{ car_id })
+      .execute();
+  }
+
 
 }
 

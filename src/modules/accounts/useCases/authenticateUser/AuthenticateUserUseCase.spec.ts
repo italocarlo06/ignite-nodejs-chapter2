@@ -33,39 +33,39 @@ describe("Authenticate User Use Case Tests", () => {
   });
 
   it("should not be able to authenticate a user with incorrect password", async () => {
-    expect(async ()=>{
-      const user = {
-        name: "italo",
-        email: "italocarlo06@gmail.com",
-        password: "123456",
-        driver_license: "1245"
-      }
-      
-      await createUserUseCase.execute(user);
-      
-      await authenticateUserUseCase.execute({
+    const user = {
+      name: "italo",
+      email: "italocarlo06@gmail.com",
+      password: "123456",
+      driver_license: "1245"
+    }
+    
+    await createUserUseCase.execute(user);
+
+    await expect(         
+      authenticateUserUseCase.execute({
         email: user.email,
         password: "123"
-      });
-    }).rejects.toBeInstanceOf(AppError);    
+      })
+    ).rejects.toEqual(new AppError("Email or password incorrect!"));    
   });
 
   it("should not be able to authenticate a user with incorrect email", async () => {
-    expect(async ()=>{
-      const user = {
-        name: "italo",
-        email: "italocarlo06@gmail.com",
-        password: "123456",
-        driver_license: "1245"
-      }
-      
-      await createUserUseCase.execute(user);
-      
-      await authenticateUserUseCase.execute({
+    const user = {
+      name: "italo",
+      email: "italocarlo06@gmail.com",
+      password: "123456",
+      driver_license: "1245"
+    }
+    
+    await createUserUseCase.execute(user);
+
+    await expect(         
+      authenticateUserUseCase.execute({
         email: "user@gmail.com",
         password: user.password
-      });
-    }).rejects.toBeInstanceOf(AppError);    
+      })
+    ).rejects.toEqual(new AppError("Email or password incorrect!"));     
   });
 
 });

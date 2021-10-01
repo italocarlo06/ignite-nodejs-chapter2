@@ -6,6 +6,7 @@ import { CreateRentalDTO } from "@modules/rentals/dtos/CreateRentalDTO";
 import { IDateProvider } from "@shared/container/providers/DateProvider/IDateProvider";
 
 import { AppError } from "@shared/errors/AppError";
+import { ICarsRepository } from "@modules/cars/repositories/ICarsRepository";
 
 
 @injectable()
@@ -15,7 +16,9 @@ class CreateRentalUseCase{
     @inject("RentalsRepository")
     private rentalsRepository: IRentalsRepository,
     @inject("DateProvider")
-    private dateProvider: IDateProvider
+    private dateProvider: IDateProvider,
+    @inject("CarsRepository")
+    private carsRepository: ICarsRepository
   ){
     
   }
@@ -31,18 +34,21 @@ class CreateRentalUseCase{
     if (existRentalOpenByUser){
       throw new AppError("A rental is opened by this user!");
     }
+      
+    const compare = this.dateProvider.compareInHours(new Date(), expected_return_date);
+
+    if (compare < 24) {
+      throw new AppError(`Invalid return time!`);
+    }
 
     const rental = await this.rentalsRepository.create({
       car_id, 
       user_id, 
       expected_return_date
     });
-    
-    const compare = this.dateProvider.compareInHours(new Date(), expected_return_date);
 
-    if (compare < 24) {
-      throw new AppError(`Invalid return time ${compare}!`);
-    }
+    await this.carsRepository.updateCarAvailable({ car_id , available: false});
+    
 
     return rental;
   }

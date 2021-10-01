@@ -4,6 +4,7 @@ import { Car } from "@modules/cars/infra/typeorm/entities/Car";
 import { ListCarsDTO } from "@modules/cars/dtos/ListCarsDTO";
 
 class CarsInMemoryRepository implements ICarsRepository {
+
   
   
   private cars: Car[] = [];
@@ -66,6 +67,13 @@ class CarsInMemoryRepository implements ICarsRepository {
   async findById(id: string): Promise<Car> {
     const car = this.cars.find( car => car.id === id);
     return car;
+  }
+
+  async updateCarAvailable({ car_id, available }: UpdateCarAvaiableDTO): Promise<void> {    
+    const carIndex = this.cars.findIndex( car => car.id === car_id);    
+    Object.assign( this.cars[carIndex], {
+      available
+    });    
   }
 
 }

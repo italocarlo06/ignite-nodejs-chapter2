@@ -38,18 +38,17 @@ describe("Upload Car Image", () => {
     expect(images.length).toBe(1);
 
   });
-
+  
   it("not should be able to upload a new image to a non exists car", async () => {
 
-    expect( async () => {
-      const images_name = ["123465.jpg"];
-
-      await uploadCarImagesUseCase.execute({
+    const images_name = ["123465.jpg"];
+    
+    await expect( uploadCarImagesUseCase.execute({
         car_id: "123456",
         images_name
-      });      
-    }).rejects.toBeInstanceOf(AppError);
-  
-
+      })      
+    ).rejects.toEqual(new AppError("Car is not registered!"));
   });
+ 
+
 });

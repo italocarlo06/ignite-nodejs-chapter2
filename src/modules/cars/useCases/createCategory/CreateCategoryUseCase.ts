@@ -12,7 +12,7 @@ class CreateCategoryUseCase {
   ){
 
   }
-  async execute({ name, description }: CreateCategoryDTO):Promise<void> {
+  async  execute({ name, description }: CreateCategoryDTO):Promise<void> {
     const categoryAlreadExists = await this.categoriesRepository.findByName(name);
     if (!categoryAlreadExists){      
       await this.categoriesRepository.create({ name, description });      
