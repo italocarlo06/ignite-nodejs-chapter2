@@ -4,6 +4,10 @@ import { sign } from "jsonwebtoken";
 
 import { IUsersRepository } from "@modules/accounts/repositories/IUsersRepository";
 import { AppError } from "@errors/AppError";
+import { IUsersTokensRepository } from "@modules/accounts/repositories/IUsersTokenRepository";
+import auth from "@config/auth";
+import { IDateProvider } from "@shared/container/providers/DateProvider/IDateProvider";
+
 
 interface IRequest{
   email: string;
@@ -16,19 +20,31 @@ interface IResponse{
     email: string
   };
   token: string;
+  refresh_token: string;
 }
 
 @injectable()
 class AuthenticateUserUseCase{
   constructor(
     @inject('UsersRepository')
-    private usersRepository: IUsersRepository
+    private usersRepository: IUsersRepository,
+    @inject("UsersTokensRepository")
+    private usersTokenRepository: IUsersTokensRepository,
+    @inject("DateProvider")
+    private dateProvider: IDateProvider
   ){
 
   }
 
   async execute({ email, password }: IRequest): Promise<IResponse>{
     const user = await this.usersRepository.findByEmail(email);
+    const { 
+      secret_refresh_token, 
+      secret_token, 
+      expires_in_token,
+      expires_in_refresh_token,
+      expires_refresh_token_days
+    } = auth;
 
     if (!user){
       throw new AppError("Email or password incorrect!");
@@ -40,9 +56,22 @@ class AuthenticateUserUseCase{
       throw new AppError("Email or password incorrect!");
     }
 
-    const token = sign({}, "31a98b2d2c999faebab50ee41d49f20c",{
+    const token = sign({}, secret_token,{
       subject: user.id,
-      expiresIn: "1d"
+      expiresIn: expires_in_token
+    });
+
+    const refresh_token = sign({ email }, secret_refresh_token,{
+      subject: user.id,
+      expiresIn: expires_in_refresh_token
+    });
+
+    const expires_date = this.dateProvider.addDays(expires_refresh_token_days);
+
+    await this.usersTokenRepository.create({
+      user_id: user.id,
+      refresh_token,
+      expires_date 
     });
 
     return {
@@ -50,7 +79,8 @@ class AuthenticateUserUseCase{
         email: user.email,
         name: user.name
       },
-      token
+      token,
+      refresh_token
     }
 
   }

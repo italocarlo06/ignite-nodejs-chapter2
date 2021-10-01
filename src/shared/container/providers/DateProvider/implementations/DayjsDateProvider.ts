@@ -10,7 +10,8 @@ enum FormatCompare {
   Days = "days"
 }
 
-class DayjsDateProvider implements IDateProvider{  
+class DayjsDateProvider implements IDateProvider{
+
 
   compare(start_date: Date, end_date:Date, type:FormatCompare): number{  
       const startDateFormated = this.convertToUTC(start_date);
@@ -37,13 +38,22 @@ class DayjsDateProvider implements IDateProvider{
     return formatedDate;
   }
 
-  addDays(date: Date): Promise<Date> {
-    throw new Error("Method not implemented.");
-  }
 
   dateNow(): Date {
     return dayjs().toDate();
   }
+
+  addDays(days: number): Date{
+    return dayjs().add(days,"days").toDate();
+  }  
+
+  addHours(hours: number): Date {
+    return dayjs().add(hours,"hours").toDate();
+  }
+
+  compareIfBefore(start_date: Date, end_date: Date): boolean {
+    return dayjs(start_date).isBefore(end_date);
+  }  
 
 }
 

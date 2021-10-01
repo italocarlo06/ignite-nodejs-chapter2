@@ -15,6 +15,10 @@ import { IRentalsRepository } from "@modules/rentals/repositories/IRentalsReposi
 import { RentalsRepository } from "@modules/rentals/infra/typeorm/repositories/RentalsRepository";
 import { DayjsDateProvider } from "./providers/DateProvider/implementations/DayjsDateProvider";
 import { IDateProvider } from "./providers/DateProvider/IDateProvider";
+import { UsersTokensRepository } from "@modules/accounts/infra/typeorm/repositories/UsersTokensRepository";
+import { IUsersTokensRepository } from "@modules/accounts/repositories/IUsersTokenRepository";
+import { IMailProvider } from "./providers/MailProvider/IMailProvider";
+import { EtherealMailProvider } from "./providers/MailProvider/implementations/EtherealMailProvider";
 
 container.registerSingleton<ICategoriesRepository>(
   "CategoriesRepository",
@@ -47,8 +51,19 @@ container.registerSingleton<IRentalsRepository>(
   RentalsRepository
 );
 
+container.registerSingleton<IUsersTokensRepository>(
+  "UsersTokensRepository",
+  UsersTokensRepository
+);
 
 container.registerSingleton<IDateProvider>(
   "DateProvider",
   DayjsDateProvider
 );
+
+
+container.registerInstance<IMailProvider>(
+  "MailProvider",
+  new EtherealMailProvider()
+);
+
