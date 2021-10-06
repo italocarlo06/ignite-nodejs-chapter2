@@ -33,9 +33,13 @@ class UsersTokensInMemoryRepository implements IUsersTokensRepository {
     return userToken;
   }
 
-  deleteById(id: string): Promise<void> {
-    throw new Error("Method not implemented.");
+  async deleteById(id: string): Promise<void> {
+    const userToken = this.usersToken.find(ut => ut.id === id);
+    this.usersToken.splice(this.usersToken.indexOf(userToken));
+
   }
 
 
 }
+
+export { UsersTokensInMemoryRepository };

@@ -2,6 +2,7 @@ import { injectable, inject } from "tsyringe";
 import { ICarsImagesRepository } from "@modules/cars/repositories/ICarsImagesRepository";
 import { ICarsRepository } from "@modules/cars/repositories/ICarsRepository";
 import { AppError } from "@shared/errors/AppError";
+import { IStorageProvider } from "@shared/container/providers/StorageProvider/IStorageProvider";
 
 interface IRequest {
   car_id: string;
@@ -15,7 +16,9 @@ class UploadCarImagesUseCase {
     @inject("CarsImagesRepository")
     private carsImagesRepository: ICarsImagesRepository,
     @inject("CarsRepository")
-    private carsRepository: ICarsRepository
+    private carsRepository: ICarsRepository,
+    @inject("StorageProvider")
+    private storageProvider: IStorageProvider
   ){
 
   }
@@ -25,12 +28,13 @@ class UploadCarImagesUseCase {
     if (!registeredCar){
       throw new AppError("Car is not registered!");
     }
-
+   
     images_name.map( async image_name  => {
       await this.carsImagesRepository.create({
         car_id,
         image_name
       });
+      await this.storageProvider.save(image_name, "cars");
     });    
   }
   

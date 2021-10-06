@@ -42,10 +42,6 @@ class EtherealMailProvider implements IMailProvider {
       from: "Rentx <noreply@rentx.com.br>",      
       html: templateHtml
     });
-
-    console.log(message.messageId);
-    console.log(nodemailer.getTestMessageUrl(message));
-
   }
 
 }

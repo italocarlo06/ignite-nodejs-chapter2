@@ -12,7 +12,7 @@ import { UploadCarImageController } from "@modules/cars/useCases/uploadImage/Upl
 
 const carsRoutes = Router();
 
-const uploadImages = multer(uploadConfig.upload("./tmp/cars"));
+const uploadImages = multer(uploadConfig);
 
 const createCarController = new CreateCarController();
 const createCarSpecicationController = new CreateCarSpecificationController();
