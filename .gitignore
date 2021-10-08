@@ -2,7 +2,7 @@ dist
 node_modules
 coverage
 .vscode
-.env
 ormconfig.json
 tmp/*
 !tmp/.gitkeep
+.env
