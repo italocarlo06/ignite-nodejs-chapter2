@@ -26,6 +26,19 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}          
-          source: "., !node_modules"
+          source: ".,!node_modules,!docker-compose.yml,!ormconfig.json"
           target: "~/app/ignite-nodejs-chapter2"
+      
+      - name: Update api
+        uses: appleboy/ssh-action@master
+        with: 
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}          
+          script: |
+            cd ~/app/ignite-nodejs-chapter2
+            yarn
+            .node_modules/.bin/typeorm migration:run
+            pm2 restart rentx_app
         
