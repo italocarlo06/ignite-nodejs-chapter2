@@ -7,6 +7,7 @@ import cors from "cors";
 
 import swaggerFile from "../../../swagger.json";
 import { router } from "./routes";
+import { rateLimiter } from "@shared/infra/http/middlewares/rateLimiter"
 
 
 
@@ -18,6 +19,7 @@ import upload from "@config/upload";
 const app = express();
 
 app.use(express.json());
+//app.use(rateLimiter);
 
 app.use("/api-docs", swaggerUi.serve,swaggerUi.setup(swaggerFile));
 
